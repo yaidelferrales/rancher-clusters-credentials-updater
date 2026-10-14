@@ -16,7 +16,8 @@ func main() {
 	envFile := flag.String("env", ".env", "path to the .env file to load")
 	flag.Parse()
 
-	_ = godotenv.Load(*envFile)
+	// Overload so the selected .env file takes precedence over variables already set in the shell.
+	_ = godotenv.Overload(*envFile)
 	cfg := config.Load()
 
 	if !cfg.UpdateGitLab && !cfg.UpdateLocal {

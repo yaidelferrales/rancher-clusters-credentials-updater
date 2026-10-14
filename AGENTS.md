@@ -26,7 +26,7 @@ Go CLI that authenticates with Rancher using a bearer token, fetches kubeconfigs
 - **Token-only merge**: `kubeconfigmerger` intentionally only updates tokens. Cluster endpoints, certificate data, and contexts come from the stored config, not from Rancher.
 - **Ordered YAML serialization**: `clientcmd.Write` is not used because it does not guarantee field order. Custom structs with `yaml` tags are used instead.
 - **Optional targets**: both `UPDATE_GITLAB` and `UPDATE_LOCAL` are opt-in via env vars. The app exits early if neither is enabled.
-- **Multiple instances**: the `-env` CLI flag selects which `.env` file to load, enabling one binary to serve multiple Rancher/GitLab configurations.
+- **Multiple instances**: the `-env` CLI flag selects which `.env` file to load, enabling one binary to serve multiple Rancher/GitLab configurations. It is loaded with `godotenv.Overload`, so values in the selected file take precedence over variables already set in the shell.
 - **TLS**: the HTTP client in `credentialsdownloader` skips TLS verification to support Rancher instances with self-signed certificates.
 
 ## Environment variables

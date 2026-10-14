@@ -63,7 +63,8 @@ func listClusters(client *http.Client, rancherURL, token string) ([]string, erro
 	defer resp.Body.Close()
 
 	if resp.StatusCode != http.StatusOK {
-		return nil, fmt.Errorf("listing clusters returned status %d", resp.StatusCode)
+		body, _ := io.ReadAll(resp.Body)
+		return nil, fmt.Errorf("listing clusters returned status %d: %s", resp.StatusCode, body)
 	}
 
 	var list clusterList

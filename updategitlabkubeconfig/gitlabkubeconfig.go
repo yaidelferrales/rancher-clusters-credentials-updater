@@ -3,6 +3,7 @@ package updategitlabkubeconfig
 import (
 	"encoding/json"
 	"fmt"
+	"io"
 	"net/http"
 	"net/url"
 	"strings"
@@ -75,7 +76,8 @@ func writeVariable(cfg Config, value string) error {
 	defer resp.Body.Close()
 
 	if resp.StatusCode != http.StatusOK {
-		return fmt.Errorf("GitLab returned status %d when updating variable %q", resp.StatusCode, cfg.VariableKey)
+		respBody, _ := io.ReadAll(resp.Body)
+		return fmt.Errorf("GitLab returned status %d when updating variable %q: %s", resp.StatusCode, cfg.VariableKey, strings.TrimSpace(string(respBody)))
 	}
 
 	return nil
@@ -98,7 +100,8 @@ func fetchVariable(cfg Config) (*clientcmdapi.Config, error) {
 	defer resp.Body.Close()
 
 	if resp.StatusCode != http.StatusOK {
-		return nil, fmt.Errorf("GitLab returned status %d for variable %q", resp.StatusCode, cfg.VariableKey)
+		respBody, _ := io.ReadAll(resp.Body)
+		return nil, fmt.Errorf("GitLab returned status %d for variable %q: %s", resp.StatusCode, cfg.VariableKey, strings.TrimSpace(string(respBody)))
 	}
 
 	var variable variableResponse
